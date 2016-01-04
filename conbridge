@@ -1,0 +1,52 @@
+gedit /etc/asterisk/confbridge.conf
+
+[general]
+
+[admin_user]
+type=user
+pin=5555
+marked=yes
+admin=yes
+music_on_hold_when_empty=yes
+
+[default_user]
+type=user
+pin=1234
+wait_marked=yes
+end_marked=yes
+music_on_hold_when_empty=yes
+announce_user_count=yes
+
+[default_bridge]
+type=bridge
+max_members=10
+
+
+gedit /etc/asterisk/extensions.conf
+
+[general]
+
+[users/whatever]
+;
+;RAMAL 100 (for test only)
+;
+exten => 100,1,Dial(SIP/100)
+
+;
+;RAMAL 200 (for test only)
+;
+exten => 200,1,Dial(SIP/200)
+
+;
+;CONFERENCE - GUEST
+;
+exten => 666,1,Progress()
+exten => 666,2,Wait(1)
+exten => 666,3,ConfBridge(1,default_bridge,default_user)
+
+;
+;CONFERENCE - ADMIN
+;
+exten => 777,1,Progress()
+exten => 777,2,Wait(1)
+exten => 777,3,ConfBridge(1,default_bridge,admin_user)
